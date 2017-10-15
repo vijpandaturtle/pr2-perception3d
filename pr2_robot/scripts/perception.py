@@ -52,8 +52,15 @@ def pcl_callback(pcl_msg):
     # TODO: Convert ROS msg to PCL data
     cloud = ros_to_pcl(pcl_msg)
 
+    # TODO: Statistical outlier filtering
+    outlier_filter = cloud.make_statistical_outlier_filter()
+    outlier_filter.set_mean_k(50)
+    x = 1.0
+    outlier_filter.set_std_dev_mul_thresh(x)
+    cloud_filtered = outlier_filter.filter()
+
     # TODO: Voxel Grid Downsampling
-    vox = cloud.make_voxel_grid_filter()
+    vox = cloud_filtered.make_voxel_grid_filter()
     LEAF_SIZE = 0.01
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
     cloud_filtered = vox.filter()
@@ -117,12 +124,12 @@ def pcl_callback(pcl_msg):
     detected_objects_list = []
     detected_objects_labels = []
 
-        # Grab the points for the cluster
+    # Grab the points for the cluster
     for index, pts_list in enumerate(cluster_indices):
         pcl_cluster = cloud_objects.extract(pts_list)
-        cluster_ros = pcl_to_ros(pcl_cluster)
-        chists = compute_color_histograms(sample_cloud, using_hsv=False)
-        normals = get_normals(sample_cloud)
+        cloud_ros = pcl_to_ros(pcl_cluster)
+        chists = compute_color_histograms(cloud_ros, using_hsv=False)
+        normals = get_normals(cloud_ros)
         nhists = compute_normal_histograms(normals)
 
         # Compute the associated feature vector
@@ -161,10 +168,15 @@ def pcl_callback(pcl_msg):
 def pr2_mover(object_list):
 
     # TODO: Initialize variables
+    list_of_outputs = []
 
-    # TODO: Get/Read parameters
+    # TODO: Get/Read output parameters
+    object_list_params = rospy.get_param("/object_list")
 
     # TODO: Parse parameters into individual variables
+    for i in range(len(object_list_params)):
+        object_name = object_list_params[i]['name']
+        object_group = object_list_params[i]['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
 
@@ -206,6 +218,11 @@ if __name__ == '__main__':
     # TODO: Create Publishers
 
     # TODO: Load Model From disk
+    model = pickle.load(open('model.sav','rb'))
+    clf = model['classifier']
+    encoder = LabelEncoder()
+    encoder.classes = model['classes']
+    scaler = model['scaler']
 
     # Initialize color_list
     get_color_list.color_list = []

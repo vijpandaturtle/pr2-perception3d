@@ -179,16 +179,33 @@ def pr2_mover(object_list):
         object_group = object_list_params[i]['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
+    do = DetectedObject()
+    do.label = label
+    do.cloud = cloud_ros
+    detected_objects.append(do)
+
+    labels = []
+    centroids = []
 
     # TODO: Loop through the pick list
+    for object in objects:
+        labels.append(object.label)
 
         # TODO: Get the PointCloud for a given object and obtain it's centroid
+        points_arr = ros_to_pcl(object.cloud).to_array()
+        centroids.append(np.mean(points_arr, axis=0)[:3])
 
         # TODO: Create 'place_pose' for the object
+        from geometry_msgs.msg import Pose
+            pick_pose = Pose()
 
         # TODO: Assign the arm to be used for pick_place
 
         # TODO: Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
+        dict_list = []
+        for i in range(0, len(object_list_param)):
+            yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
+            dict_list.append(yaml_dict)
 
         # Wait for 'pick_place_routine' service to come up
         rospy.wait_for_service('pick_place_routine')

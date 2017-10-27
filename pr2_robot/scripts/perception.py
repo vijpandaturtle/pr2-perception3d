@@ -222,8 +222,9 @@ def pr2_mover(object_list):
             print "Service call failed: %s"%e
 
     # TODO: Output your request parameters into output yaml file
-
-
+    send_to_yaml('output_1.yaml',)
+    send_to_yaml('output_2.yaml',)
+    send_to_yaml('output_3.yaml',)
 
 if __name__ == '__main__':
 
@@ -231,6 +232,7 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # TODO: Create Subscribers
+    
 
     # TODO: Create Publishers
 

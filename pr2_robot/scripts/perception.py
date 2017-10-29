@@ -167,10 +167,19 @@ def pcl_callback(pcl_msg):
 # function to load parameters and request PickPlace service
 def pr2_mover(object_list):
 
-    # TODO: Initialize variables
+    # Initializing variables to default values and different message types
     list_of_outputs = []
     labels = []
     centroids = []
+    object_group = None
+    # ROS Messages
+    test_scene_num = Int32()
+    object_name = String()
+    arm_name = String()
+    pick_pose = Pose()
+    place_pose = Pose()
+
+    test_scene_data.data = 1
 
     # TODO: Get/Read output parameters
     object_list_params = rospy.get_param("/object_list")
@@ -178,7 +187,7 @@ def pr2_mover(object_list):
 
     # TODO: Parse parameters into individual variables
     for i in range(len(object_list_params)):
-        object_name = object_list_params[i]['name']
+        object_name.data = object_list_params[i]['name']
         object_group = object_list_params[i]['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
@@ -197,7 +206,6 @@ def pr2_mover(object_list):
 
     for i in range(len())
 
-        pick_pose = Pose()
         pick_pose.x = centroids[object][0]
         pick_pose.y = centroids[object][1]
         pick_pose.z = centroids[object][2]
@@ -205,7 +213,6 @@ def pr2_mover(object_list):
     for i in range(len(dropbox_params)):
         obj_postion = dropbox_params[i]['position']
         # TODO: Create 'place_pose' for the object
-        place_pose = Pose()
         place_pose.x = obj_position[0]
         place_pose.y = obj_position[1]
         place_pose.z = obj_position[2]
@@ -243,7 +250,7 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # TODO: Create Subscribers
-
+    
 
     # TODO: Create Publishers
 

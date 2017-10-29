@@ -169,9 +169,12 @@ def pr2_mover(object_list):
 
     # TODO: Initialize variables
     list_of_outputs = []
+    labels = []
+    centroids = []
 
     # TODO: Get/Read output parameters
     object_list_params = rospy.get_param("/object_list")
+    dropbox_params = rospy.get_param("/dropbox")
 
     # TODO: Parse parameters into individual variables
     for i in range(len(object_list_params)):
@@ -184,9 +187,6 @@ def pr2_mover(object_list):
     do.cloud = cloud_ros
     detected_objects.append(do)
 
-    labels = []
-    centroids = []
-
     # TODO: Loop through the pick list
     for object in objects:
         labels.append(object.label)
@@ -195,11 +195,22 @@ def pr2_mover(object_list):
         points_arr = ros_to_pcl(object.cloud).to_array()
         centroids.append(np.mean(points_arr, axis=0)[:3])
 
-        # TODO: Create 'place_pose' for the object
-        from geometry_msgs.msg import Pose
-            pick_pose = Pose()
+    for i in range(len())
 
-        # TODO: Assign the arm to be used for pick_place
+        pick_pose = Pose()
+        pick_pose.x = centroids[object][0]
+        pick_pose.y = centroids[object][1]
+        pick_pose.z = centroids[object][2]
+
+    for i in range(len(dropbox_params)):
+        obj_postion = dropbox_params[i]['position']
+        # TODO: Create 'place_pose' for the object
+        place_pose = Pose()
+        place_pose.x = obj_position[0]
+        place_pose.y = obj_position[1]
+        place_pose.z = obj_position[2]
+
+    # TODO: Assign the arm to be used for pick_place
 
         # TODO: Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
         dict_list = []
@@ -232,7 +243,7 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # TODO: Create Subscribers
-    
+
 
     # TODO: Create Publishers
 

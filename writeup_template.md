@@ -5,7 +5,7 @@
 
 
 # Required Steps for a Passing Submission:
-1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify). 
+1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify).
 2. Write a ROS node and subscribe to `/pr2/world/points` topic. This topic contains noisy point cloud data that you must work with.
 3. Use filtering and RANSAC plane fitting to isolate the objects of interest from the rest of the scene.
 4. Apply Euclidean clustering to create separate clusters for individual items.
@@ -37,7 +37,17 @@ You're reading it!
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
+Exercise 1 mainly involved the use of python-pcl library to implement the following functions :
+1. **Voxel Grid Downsampling**
+   Voxel stands for a volume element in a 3D image (point cloud). This function reduces the number of points in a point cloud, while retaining
+   the point cloud data.
+2. **Pass Through Filtering**
+   Removes the useless data from the point cloud, so the point cloud consists of the region of interest (in this case the robot's reachable workspace).
+3. **RANSAC plane fitting** (This was followed by and extract indices step to extract the inliers and outliers in the image)
+   This is used to further filter out the objects in the scene which are unnecessary i.e noise.
+
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
+
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
 Here is an example of how to include an image in your writeup.
@@ -48,10 +58,7 @@ Here is an example of how to include an image in your writeup.
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
-And here's another image! 
+And here's another image!
 ![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
 
 Spend some time at the end to discuss your code, what techniques you used, what worked and why, where the implementation might fail and how you might improve it if you were going to pursue this project further.  
-
-
-

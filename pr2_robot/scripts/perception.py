@@ -181,7 +181,7 @@ def pr2_mover(object_list):
 
     test_scene_data.data = 1
 
-    # TODO: Get/Read output parameters
+    # Get/Read output parameters
     object_list_params = rospy.get_param("/object_list")
     dropbox_params = rospy.get_param("/dropbox")
 
@@ -191,18 +191,14 @@ def pr2_mover(object_list):
         object_group = object_list_params[i]['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
-    do = DetectedObject()
-    do.label = label
-    do.cloud = cloud_ros
-    detected_objects.append(do)
 
     # TODO: Loop through the pick list
-    for object in objects:
-        labels.append(object.label)
+        for object in objects:
+            labels.append(object.label)
 
-        # TODO: Get the PointCloud for a given object and obtain it's centroid
-        points_arr = ros_to_pcl(object.cloud).to_array()
-        centroids.append(np.mean(points_arr, axis=0)[:3])
+            # TODO: Get the PointCloud for a given object and obtain it's centroid
+            points_arr = ros_to_pcl(object.cloud).to_array()
+            centroids.append(np.mean(points_arr, axis=0)[:3])
 
     for i in range(len())
 
@@ -250,7 +246,7 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # TODO: Create Subscribers
-    
+
 
     # TODO: Create Publishers
 

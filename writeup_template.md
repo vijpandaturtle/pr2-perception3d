@@ -44,9 +44,11 @@ Exercise 1 mainly involved the use of python-pcl library to implement the follow
 2. **Pass Through Filtering**
    Removes the useless data from the point cloud, so the point cloud consists of the region of interest (in this case the robot's reachable workspace).
 3. **RANSAC plane fitting** (This was followed by and extract indices step to extract the inliers and outliers in the image)
-   This is used to further filter out the objects in the scene which are unnecessary i.e noise.
+   This is used to further filter out the objects in the scene which are unnecessary i.e outliers.
+The exercise-1 code can be found in the perception.py script under the respective comment.
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
+
 
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.

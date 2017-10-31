@@ -49,7 +49,7 @@ The exercise-1 code can be found in the perception.py script under the respectiv
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
 
-
+Exercise 2 involved the use of Euclidean clustering algorithm also known as DBSCAN instead of the k-means. We come to this conclusion because DBSCAN is a better choice when the number of clusters are unknown.
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
 Here is an example of how to include an image in your writeup.
@@ -63,4 +63,5 @@ Here is an example of how to include an image in your writeup.
 And here's another image!
 ![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
 
-Spend some time at the end to discuss your code, what techniques you used, what worked and why, where the implementation might fail and how you might improve it if you were going to pursue this project further.  
+The implementation of the pcl_callback function which was a combination of the code in exercise-1, 2 and 3 was done in parallel with the exercise lessons. That part of the code involved the use of various filters which were simple function calls, thanks to the python-pcl library.
+The only part that was new in the project template script was the pr2_mover function.

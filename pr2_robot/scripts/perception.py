@@ -49,23 +49,23 @@ def send_to_yaml(yaml_filename, dict_list):
 # Callback function for your Point Cloud Subscriber
 def pcl_callback(pcl_msg):
 
-    # TODO: Convert ROS msg to PCL data
+    # Convert ROS msg to PCL data using helper function
     cloud = ros_to_pcl(pcl_msg)
 
-    # TODO: Statistical outlier filtering
+    # Statistical outlier filtering : Since we are dealing with noisy environment
     outlier_filter = cloud.make_statistical_outlier_filter()
     outlier_filter.set_mean_k(50)
     x = 1.0
     outlier_filter.set_std_dev_mul_thresh(x)
     cloud_filtered = outlier_filter.filter()
 
-    # TODO: Voxel Grid Downsampling
+    # Voxel Grid Downsampling : Reducing number of volume elements in the picture
     vox = cloud_filtered.make_voxel_grid_filter()
     LEAF_SIZE = 0.01
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
     cloud_filtered = vox.filter()
 
-    # TODO: PassThrough Filter
+    # PassThrough Filter : Extracting everything except for the table as outliers
     passthrough = cloud_filtered.make_passthrough_filter()
     filter_axis = 'z'
     passthrough.set_filter_field_name(filter_axis)
@@ -74,7 +74,7 @@ def pcl_callback(pcl_msg):
     passthrough.set_filter_limits(axis_min, axis_max)
     cloud_filtered = passthrough.filter()
 
-    # TODO: RANSAC Plane Segmentation
+    # RANSAC Plane Segmentation
     seg = cloud_filtered.make_segmenter()
     seg.set_model_type(pcl.SACMODEL_PLANE)
     seg.set_method_type(pcl.SAC_RANSAC)
@@ -83,11 +83,11 @@ def pcl_callback(pcl_msg):
     seg.set_distance_threshold(max_distance)
     inliers, coefficients = seg.segment()
 
-    # TODO: Extract inliers and outliers
+    # Extract inliers and outliers : Extract indices filter
     cloud_table = cloud_filtered.extract(inliers, negative=False)
     cloud_objects = cloud_filtered.extract(inliers, negative=True)
 
-    # TODO: Euclidean Clustering
+    # Euclidean Clustering
     white_cloud = XYZRGB_to_XYZ(cloud_objects)
     tree = white_cloud.make_kdtree()
     #Creating a cluster extraction object
@@ -113,12 +113,12 @@ def pcl_callback(pcl_msg):
     ros_cloud_objects = pcl_to_ros(cloud_objects)
     ros_cloud_table = pcl_to_ros(cloud_table)
 
-    # TODO: Publish ROS messages
+    # Publish ROS messages using helper function
     pcl_objects_pub.publish(ros_cloud_objects)
     pcl_table_pub.publish(ros_cloud_table)
 
 
-# Exercise-3 TODOs:
+# Exercise-3:
 
     # Classify the clusters! (loop through each detected cluster one at a time)
     detected_objects_list = []
@@ -166,54 +166,56 @@ def pcl_callback(pcl_msg):
 
 def pr2_mover(object_list):
 
-    # TODO: Initialize variables
+    # Initialize variables and ROS messages
     output_list = []
+    # The appropriate message types were inferred from the srv file
     test_scene_num = Int32()
     object_name = String()
     object_group = String()
     arm_name = String()
     pick_pose = Pose()
-    place_pose Pose()
+    place_pose = Pose()
 
-    # TODO: Get/Read parameters
+    # Get/Read parameters
     object_list_params = rospy.get_param("/object_list")
     dropbox_params = rospy.get_param("/dropbox")
     # Set the scene to 1
     test_scene_num.data = 1
 
-    # TODO: Parse parameters into individual variables
+    # Parse parameters into individual variables
     for param in object_list_params:
         object_name.data = object_param['name']
         object_group.data = object_param['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
+    # Loop through the pick list
 
-    # TODO: Loop through the pick list
         for obj in object_list:
-        # TODO: Get the PointCloud for a given object and obtain it's centroid
-        points_arr = ros_to_pcl(obj.cloud).to_array()
-        centroids.append(np.mean(points_arr, axis=0)[:3])
+            # Get the PointCloud for a given object and obtain it's centroid
+            centroid = []
+            points_arr = ros_to_pcl(obj.cloud).to_array()
+            centroids.append(np.mean(points_arr, axis=0)[:3])
 
-        # TODO: Create 'place_pose' for the object
-        pick_pose.position.x = centroids[object][0]
-        pick_pose.position.y = centroids[object][1]
-        pick_pose.position.z = centroids[object][2]
+            # Create 'pick_pose' for the object
+            pick_pose.position.x = centroids[object][0]
+            pick_pose.position.y = centroids[object][1]
+            pick_pose.position.z = centroids[object][2]
 
         for params in dropbox_params:
             obj_postion = params['position']
-        # TODO: Create 'place_pose' for the object
-        place_pose.position.x = obj_position[0]
-        place_pose.position.y = obj_position[1]
-        place_pose.position.z = obj_position[2]
+            # Create 'place_pose' for the object
+            place_pose.position.x = obj_position[0]
+            place_pose.position.y = obj_position[1]
+            place_pose.position.z = obj_position[2]
 
 
-        # TODO: Assign the arm to be used for pick_place
-        if object_group.data = 'green':
-                arm_name = 'right'
-            elif object_group.data = 'red':
-                arm_name = 'left'
+        # Assign the arm to be used for pick_place
+        if object_group.data =='green':
+           arm_name = 'right'
+        elif object_group.data == 'red':
+           arm_name = 'left'
 
-        # TODO: Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
+        # Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
         dict_list = []
         for i in range(0, len(object_list_param)):
             yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
@@ -226,7 +228,7 @@ def pr2_mover(object_list):
         try:
             pick_place_routine = rospy.ServiceProxy('pick_place_routine', PickPlace)
 
-            # TODO: Insert your message variables to be sent as a service request
+            # Insert your message variables to be sent as a service request
             resp = pick_place_routine(TEST_SCENE_NUM, OBJECT_NAME, WHICH_ARM, PICK_POSE, PLACE_POSE)
 
             print ("Response: ",resp.success)
@@ -234,10 +236,11 @@ def pr2_mover(object_list):
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
 
-    # TODO: Output your request parameters into output yaml file
+    # Output your request parameters into output yaml file
     send_to_yaml('output_1.yaml',)
     send_to_yaml('output_2.yaml',)
     send_to_yaml('output_3.yaml',)
+
 
 if __name__ == '__main__':
 

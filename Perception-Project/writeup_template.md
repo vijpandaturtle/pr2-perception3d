@@ -60,8 +60,5 @@ Here is an example of how to include an image in your writeup.
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
-And here's another image!
-![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
-
 The implementation of the pcl_callback function which was a combination of the code in exercise-1, 2 and 3 was done in parallel with the exercise lessons. That part of the code involved the use of various filters which were simple function calls, thanks to the python-pcl library.
 The only part that was new in the project template script was the pr2_mover function.

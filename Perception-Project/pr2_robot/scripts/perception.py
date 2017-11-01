@@ -245,8 +245,8 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # TODO: Create Subscribers
-
-
+    detected_objects = rospy.Subscriber()
+    
     # TODO: Create Publishers
 
     # TODO: Load Model From disk

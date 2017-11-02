@@ -241,15 +241,20 @@ def pr2_mover(object_list):
 
 if __name__ == '__main__':
 
-    # TODO: ROS node initialization
+    # ROS node initialization
     rospy.init_node('recognition', anonymous=True)
 
-    # TODO: Create Subscribers
-    detected_objects = rospy.Subscriber()
-    
-    # TODO: Create Publishers
+    # Create Subscribers
+    detected_objects = rospy.Subscriber('/pr2/world/points')
 
-    # TODO: Load Model From disk
+    # Create Publishers
+    pcl_objects_pub = rospy.Publisher('/pcl_objects',PointCloud2, queue_size=1)
+    pcl_table_pub = rospy.Publisher('/pcl_table',PointCloud2, queue_size=1)
+    detected_objects_pub = rospy.Publisher('/detected_objects',PointCloud2, queue_size=1)
+    object_markers_pub = rospy.Publisher('/object_markers',PointCloud2, queue_size=1)
+
+
+    # Load Model From disk
     model = pickle.load(open('model.sav','rb'))
     clf = model['classifier']
     encoder = LabelEncoder()
@@ -259,6 +264,6 @@ if __name__ == '__main__':
     # Initialize color_list
     get_color_list.color_list = []
 
-    # TODO: Spin while node is not shutdown
+    # Spin while node is not shutdown
     while not rospy.is_shutdown():
         rospy.spin()

@@ -171,7 +171,7 @@ def pr2_mover(object_list):
     # The appropriate message types were inferred from the srv file
     test_scene_num = Int32()
     object_name = String()
-    object_group = String()
+    object_group = None
     arm_name = String()
     pick_pose = Pose()
     place_pose = Pose()
@@ -185,7 +185,7 @@ def pr2_mover(object_list):
     # Parse parameters into individual variables
     for param in object_list_params:
         object_name.data = object_param['name']
-        object_group.data = object_param['group']
+        object_group = object_param['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
     # Loop through the pick list
@@ -202,7 +202,7 @@ def pr2_mover(object_list):
             pick_pose.position.z = centroids[object][2]
 
         for params in dropbox_params:
-            obj_postion = params['position']
+            obj_position = params['position']
             # Create 'place_pose' for the object
             place_pose.position.x = obj_position[0]
             place_pose.position.y = obj_position[1]
@@ -210,9 +210,9 @@ def pr2_mover(object_list):
 
 
         # Assign the arm to be used for pick_place
-        if object_group.data =='green':
+        if object_group =='green':
            arm_name = 'right'
-        elif object_group.data == 'red':
+        elif object_group == 'red':
            arm_name = 'left'
 
         # Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
@@ -245,7 +245,7 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # Create Subscribers
-    detected_objects = rospy.Subscriber('/pr2/world/points')
+    detected_objects = rospy.Subscriber('/pr2/world/points', PointCloud2, pcl_callback, queue_size=1)
 
     # Create Publishers
     pcl_objects_pub = rospy.Publisher('/pcl_objects',PointCloud2, queue_size=1)

@@ -121,7 +121,7 @@ def pcl_callback(pcl_msg):
 # Exercise-3:
 
     # Classify the clusters! (loop through each detected cluster one at a time)
-    detected_objects_list = []
+    detected_objects = []
     detected_objects_labels = []
 
     # Grab the points for the cluster
@@ -160,7 +160,7 @@ def pcl_callback(pcl_msg):
     # Could add some logic to determine whether or not your object detections are robust
     # before calling pr2_mover()
     try:
-        pr2_mover(detected_objects_list)
+        pr2_mover(detected_objects)
     except rospy.ROSInterruptException:
         pass
 
@@ -184,8 +184,8 @@ def pr2_mover(object_list):
 
     # Parse parameters into individual variables
     for param in object_list_params:
-        object_name.data = object_param['name']
-        object_group = object_param['group']
+        object_name.data = param['name']
+        object_group = param['group']
 
     # TODO: Rotate PR2 in place to capture side tables for the collision map
     # Loop through the pick list
@@ -217,7 +217,7 @@ def pr2_mover(object_list):
 
         # Create a list of dictionaries (made with make_yaml_dict()) for later output to yaml format
         dict_list = []
-        for i in range(0, len(object_list_param)):
+        for i in range(0, len(object_list_params)):
             yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
             dict_list.append(yaml_dict)
 
@@ -245,13 +245,13 @@ if __name__ == '__main__':
     rospy.init_node('recognition', anonymous=True)
 
     # Create Subscribers
-    detected_objects = rospy.Subscriber('/pr2/world/points', PointCloud2, pcl_callback, queue_size=1)
+    pcl_sub = rospy.Subscriber('/pr2/world/points', PointCloud2, pcl_callback, queue_size=1)
 
     # Create Publishers
     pcl_objects_pub = rospy.Publisher('/pcl_objects',PointCloud2, queue_size=1)
     pcl_table_pub = rospy.Publisher('/pcl_table',PointCloud2, queue_size=1)
-    detected_objects_pub = rospy.Publisher('/detected_objects',PointCloud2, queue_size=1)
-    object_markers_pub = rospy.Publisher('/object_markers',PointCloud2, queue_size=1)
+    detected_objects_pub = rospy.Publisher('/detected_objects',DetectedObjectsArray, queue_size=1)
+    object_markers_pub = rospy.Publisher('/object_markers',Marker, queue_size=1)
 
 
     # Load Model From disk

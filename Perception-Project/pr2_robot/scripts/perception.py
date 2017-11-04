@@ -246,7 +246,7 @@ if __name__ == '__main__':
 
     # Create Subscribers
     pcl_sub = rospy.Subscriber('/pr2/world/points', PointCloud2, pcl_callback, queue_size=1)
-
+    
     # Create Publishers
     pcl_objects_pub = rospy.Publisher('/pcl_objects',PointCloud2, queue_size=1)
     pcl_table_pub = rospy.Publisher('/pcl_table',PointCloud2, queue_size=1)

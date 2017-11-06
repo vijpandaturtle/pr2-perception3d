@@ -94,7 +94,7 @@ def pcl_callback(pcl_msg):
     ec = white_cloud.make_EuclideanClusterExtraction()
     ec.set_ClusterTolerance(0.001)
     ec.set_MinClusterSize(10)
-    ec.set_MaxClusterSize(250)
+    ec.set_MaxClusterSize(1000)
     ec.set_SearchMethod(tree)
     cluster_indices = ec.Extract()
 
@@ -246,7 +246,7 @@ if __name__ == '__main__':
 
     # Create Subscribers
     pcl_sub = rospy.Subscriber('/pr2/world/points', PointCloud2, pcl_callback, queue_size=1)
-    
+
     # Create Publishers
     pcl_objects_pub = rospy.Publisher('/pcl_objects',PointCloud2, queue_size=1)
     pcl_table_pub = rospy.Publisher('/pcl_table',PointCloud2, queue_size=1)

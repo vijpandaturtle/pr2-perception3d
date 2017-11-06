@@ -61,4 +61,11 @@ Here is an example of how to include an image in your writeup.
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
 The implementation of the pcl_callback function which was a combination of the code in exercise-1, 2 and 3 was done in parallel with the exercise lessons. That part of the code involved the use of various filters which were simple function calls, thanks to the python-pcl library.
-The only part that was new in the project template script was the pr2_mover function.
+So, the purpose of the project was to implement this perception pipeline in simulated environment with some added noise, to mimic the noise in data that we would obtain in a real-world environment. This required the use of a statistical outlier filter to filter the extra noise out of each frame.
+Now, moving on to the implementing the pipeline as a node. There were a few steps that needed to completed to make it work, all of which is consolidated into the pr2_mover function. First, I initialized all the ros message types and assigned corresponding values. This was done easily by looking up the messages types on the srv file and their definitions using the **ros message info** command.
+
+##### Training and Inferring from the SVM
+
+Generating the SVM was a tough job to debug. It kept repeating the message 'Invalid cloud detected' for each point cloud. However, training the model did produce train.sav and model.sav file containing the training data and the saved model respectively.
+Below you can see the normalized and non-normalized confusion matrix of the SVM on the training data.
+![image-1](..\images\Confusion.jpg) 

@@ -64,7 +64,7 @@ def pcl_callback(pcl_msg):
     LEAF_SIZE = 0.01
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
     cloud_filtered = vox.filter()
-     
+
     # Pass through filter for boxes on the side of the table
     passthrough_box = cloud_filtered.make_passthrough_filter()
     passthrough_box.set_filter_field_name('y')
@@ -105,7 +105,7 @@ def pcl_callback(pcl_msg):
     ec.set_SearchMethod(tree)
     cluster_indices = ec.Extract()
 
-    # TODO: Create Cluster-Mask Point Cloud to visualize each cluster separately
+    # Create Cluster-Mask Point Cloud to visualize each cluster separately
     cluster_color = get_color_list(len(cluster_indices))
     color_cluster_point_list = []
     for j,indices in enumerate(cluster_indices):
@@ -124,9 +124,6 @@ def pcl_callback(pcl_msg):
     pcl_objects_pub.publish(ros_cloud_objects)
     pcl_table_pub.publish(ros_cloud_table)
     pcl_cluster_pub.publish(ros_cluster_cloud)
-
-
-# Exercise-3:
 
     # Classify the clusters! (loop through each detected cluster one at a time)
     detected_objects = []
@@ -206,7 +203,7 @@ def pr2_mover(object_list):
             pick_pose.position.x = centroid_pt[0]
             pick_pose.position.y = centroid_pt[1]
             pick_pose.position.z = centroid_pt[2]
-        
+
         for params in dropbox_params:
             obj_position = params['position']
             # Create 'place_pose' for the object

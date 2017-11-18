@@ -42,18 +42,26 @@ You're reading it!
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
 
 Exercise 1 mainly involved the use of python-pcl library to implement the following functions :
-1. **Voxel Grid Downsampling**
-   Voxel stands for a volume element in a 3D image (point cloud). This function reduces the number of points in a point cloud, while retaining
-   the point cloud data.
-2. **Pass Through Filtering**
-   Removes the useless data from the point cloud, so the point cloud consists of the region of interest (in this case the robot's reachable workspace).
-3. **RANSAC plane fitting** (This was followed by and extract indices step to extract the inliers and outliers in the image)
-   This is used to further filter out the objects in the scene which are unnecessary i.e outliers.
-The exercise-1 code can be found in the perception.py script under the respective comment.
+In this section, I used the following filters:
+1. **Statistical Outlier Filter :** This filter reduces noise due to outliers in the data. This is commonly used for real world image data where noise is inevitable.
+
+2. **Voxel Grid Downsampling :** This filter is used to downsample the number of points used to represent each point cloud (3D image).
+Here I set the leaf size parameter to 0.01 .
+
+3. **PassThrough Filter :** This filter is used to remove all the unnecessary parts of the image and to focus only on the table and objects.
+For the purposes of this project, I created two passthrough filters, one for the objects on the table and the other for the boxes on either side of the table. This filter keeps all of the data within it's filter limits and discards the rest. For each of the passthrough filters I set a min_axis and max_axis limits and the axis (x/y/z)
+
+4. **RANSAC Plane Segmentation :** The RANSAC segmentation method in this case, is used to separate the objects from the table. Here I use a max distance parameter of 0.01 along with the setting the model and method type and then extract the inliers and outliers separately.
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
 
-Exercise 2 involved the use of Euclidean clustering algorithm also known as DBSCAN instead of the k-means. We come to this conclusion because DBSCAN is a better choice when the number of clusters are unknown.
+For this section I used the DBSCAN algorithm, after carefully observing and experimenting with the k_means and DBSCAN algorithm. This algorithm is
+a good option to use, when the number of classes/clusters in your data is unknown. For implementation of this section, I used the Euclidean Clustering functions available in the Point Cloud Library.
+Some of the optimizations I made were,
+1. Setting the max and min cluster size.
+2. Setting the cluster tolerance.
+
+
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
 Here is an example of how to include an image in your writeup.
@@ -64,8 +72,7 @@ Here is an example of how to include an image in your writeup.
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
 The implementation of the pcl_callback function which was a combination of the code in exercise-1, 2 and 3 was done in parallel with the exercise lessons. That part of the code involved the use of various filters which were simple function calls, thanks to the python-pcl library.
-So, the purpose of the project was to implement this perception pipeline in simulated environment with some added noise, to mimic the noise in data that we would obtain in a real-world environment. This required the use of a statistical outlier filter to filter the extra noise out of each frame.
-Moving on to the implementing the pipeline as a node, there were a few steps that needed to completed to make it work, all of which is consolidated into the pr2_mover function. First, I initialized all the ros message types and assigned corresponding values. This was done easily by looking up the messages types on the srv file and their definitions using the **ros message info** command.
+So, the purpose of the project was to implement this perception pipeline in simulated environment with some added noise, to mimic the noise in data that we would obtain in a real-world environment. Moving on to the implementing the pipeline as a node, there were a few steps that needed to completed to make it work, all of which is consolidated into the pr2_mover function. First, I initialized all the ros message types and assigned corresponding values. This was done easily by looking up the messages types on the srv file and their definitions using the **ros message info** command.
 
 There are five ROS messages in total that I needed to generate and pass five messages
 
@@ -78,6 +85,7 @@ There are five ROS messages in total that I needed to generate and pass five mes
 ```
 After generating and assigning values to these messages I just had to publish these messages to the respective publishers, and also write the corresponding parameters for each object to the respective output.yaml file. There is an output.yaml for each test world.
 
+]
 #### Training and Inferring from the SVM
 
 Generating the SVM was a tough job to debug. It kept repeating the message 'Invalid cloud detected' for each point cloud. However, training the model did produce train.sav and model.sav file containing the training data and the saved model respectively.

@@ -58,14 +58,16 @@ For the purposes of this project, I created two passthrough filters, one for the
 For this section I used the DBSCAN algorithm, after carefully observing and experimenting with the k_means and DBSCAN algorithm. This algorithm is
 a good option to use, when the number of classes/clusters in your data is unknown. For implementation of this section, I used the Euclidean Clustering functions available in the Point Cloud Library.
 Some of the optimizations I made were,
-1. Setting the max and min cluster size.
-2. Setting the cluster tolerance.
+1. Setting the max and min cluster size. Max cluster size should be   ideally very high because objects are represented by a lot of points
+2. Setting the cluster tolerance. I set it to 0.01 which worked for me, but it can be increased a little more to improve performance.
+3. Finally we use the kd tree search method to search for points in a cluster. This is the default method available for euclidean clustering in the python-pcl library.
 
-
+After performing the above steps, I created a cluster mask point to visualize each cluster in Rviz and published the clustered objects after converting them to ROS messages.
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
-Here is an example of how to include an image in your writeup.
 
+Here I used an Support Vector Machine (SVM) to perform object recognition.
+You can find more information about how I trained and inferred from the SVM in the relevant section below.
 
 ### Pick and Place Setup
 
@@ -85,7 +87,6 @@ There are five ROS messages in total that I needed to generate and pass five mes
 ```
 After generating and assigning values to these messages I just had to publish these messages to the respective publishers, and also write the corresponding parameters for each object to the respective output.yaml file. There is an output.yaml for each test world.
 
-]
 #### Training and Inferring from the SVM
 
 Generating the SVM was a tough job to debug. It kept repeating the message 'Invalid cloud detected' for each point cloud. However, training the model did produce train.sav and model.sav file containing the training data and the saved model respectively.
@@ -111,3 +112,7 @@ tasks would be a future endeavour.
 
 ##### Test World 3
 ![alt text][image5]
+
+#### Future Improvements
+
+This project is an attempt to use basic machine learning methods and image manipulation tchniques to perform object recognition. Inspite of the fact that we used SVMs for object recognition, they aren't the best option for this task. I would try to implement this task using deep learning techniques or other machine learning techniques like random forest classifiers. I would also improve my code to pick and place the recognized objects successfully.

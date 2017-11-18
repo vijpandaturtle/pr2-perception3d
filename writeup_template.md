@@ -32,9 +32,11 @@
 
 You're reading it!
 
-#### Images
-
 [image1]: ./images/Confusion.png
+[image2]: ./images/Confusion2.png
+[image3]: ./images/world1.png
+[image4]: ./images/world2.png
+[image5]: ./images/world3(1).png
 
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
@@ -65,9 +67,39 @@ The implementation of the pcl_callback function which was a combination of the c
 So, the purpose of the project was to implement this perception pipeline in simulated environment with some added noise, to mimic the noise in data that we would obtain in a real-world environment. This required the use of a statistical outlier filter to filter the extra noise out of each frame.
 Moving on to the implementing the pipeline as a node, there were a few steps that needed to completed to make it work, all of which is consolidated into the pr2_mover function. First, I initialized all the ros message types and assigned corresponding values. This was done easily by looking up the messages types on the srv file and their definitions using the **ros message info** command.
 
+There are five ROS messages in total that I needed to generate and pass five messages
+
+```python
+  test_scene_num = Int32() # Indicates the test world number
+  object_name = String() # Name of the object from the pick_list.yaml
+  arm_name = String() # 'Left' or 'Right' arm to be used based on object group
+  pick_pose = Pose() # Location of object on the table
+  place_pose = Pose() # Drop off point of object
+```
+After generating and assigning values to these messages I just had to publish these messages to the respective publishers, and also write the corresponding parameters for each object to the respective output.yaml file. There is an output.yaml for each test world.
+
 #### Training and Inferring from the SVM
 
 Generating the SVM was a tough job to debug. It kept repeating the message 'Invalid cloud detected' for each point cloud. However, training the model did produce train.sav and model.sav file containing the training data and the saved model respectively.
 Below you can see the normalized and non-normalized confusion matrix of the SVM on the training data.
 
 ![alt text][image1]
+
+However, this confusion matrix didn't seem to have uniform readings, some were really high while three blocks were relatively low. I wanted to improve this, so I increased the number of features captured by increasing the number of iterations in the loop in capture_features script. After that to improve the SVM accuracy, I also added the 'C' term with a value of 0.01 . This term is used to tell the SVM how much we want to misclassify a particular sample in the scene, so it has to be as small as possible. More information about SVM kernel tricks and optimization techniques can be found [here.](https://stats.stackexchange.com/questions/23614/parameters-to-change-for-different-kernels-for-svm)
+After the above mentioned optimizations, this was my final confusion matrix.
+
+![alt text][image2]
+
+For the pick and place requests, I only generated the required parameters and wrote them to the .yaml file. Performing the actual pick and place
+tasks would be a future endeavour.
+
+#### Performing object recognition in the test worlds
+
+##### Test World 1
+![alt text][image3]
+
+##### Test World 2
+![alt text][image4]
+
+##### Test World 3
+![alt text][image5]

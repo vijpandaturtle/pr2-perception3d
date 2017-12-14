@@ -94,7 +94,7 @@ Below you can see the normalized and non-normalized confusion matrix of the SVM 
 
 ![alt text][image1]
 
-However, this confusion matrix didn't seem to have uniform readings, some were really high while three blocks were relatively low. I wanted to improve this, so I increased the number of features captured by increasing the number of iterations in the loop in capture_features script. After that to improve the SVM accuracy, I also added the 'C' term with a value of 0.01 . This term is used to tell the SVM how much we want to misclassify a particular sample in the scene, so it has to be as small as possible. More information about SVM kernel tricks and optimization techniques can be found [here.](https://stats.stackexchange.com/questions/23614/parameters-to-change-for-different-kernels-for-svm)
+However, this confusion matrix didn't seem to have uniform readings, some were really high while three blocks were relatively low. I wanted to improve this, so I increased the number of features captured by increasing the number of iterations in the loop in capture_features script. After that to improve the SVM accuracy, I also added the 'C' term with a value of 0.01 . This term is used to tell the SVM how much we want to avoid misclassifying a particular sample in the scene, so it has to be as large as possible. More information about SVM kernel tricks and optimization techniques can be found [here.](https://stats.stackexchange.com/questions/23614/parameters-to-change-for-different-kernels-for-svm)
 After the above mentioned optimizations, this was my final confusion matrix.
 
 ![alt text][image2]
